@@ -49,8 +49,10 @@ male_total <- dplyr::count(male_data)
 male_pr = male_obese / male_total
 
 View(male_pr)
+ob_pr_sex_female = female_pr/female_pr
+ob_pr_sex_male_female = male_pr/female_pr
 
-ob_pr_sex = male_pr/female_pr
+ob_pr_sex <- dplyr::bind_rows(ob_pr_sex_female, ob_pr_sex_male_female)
 
 View(ob_pr_sex)
 

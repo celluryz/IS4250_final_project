@@ -8,11 +8,12 @@ library(dplyr)
 library(foreign)
 
 origin_data_09 <- read.xport("~/Documents/personal/Y4S2/IS4250/CDBRFS09.XPT")
-View(origin_data_09)
+
 
 sample_data_09 <- dplyr::select(origin_data_09, X_STATE, VETERAN2,  AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, X_FRTSERV, X_BMI4)
 sample_data_09 <- dplyr::rename(sample_data_09, VETERAN = VETERAN2)
 sample_data_09 <- dplyr::filter(sample_data_09, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
+
 
 sample_data_all <- dplyr::filter(sample_data_09, VETERAN != 1 & VETERAN != 2 & VETERAN != 3) 
 sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 1850 & X_BMI4 != 9999 ) 
@@ -51,6 +52,7 @@ View(male_pr)
 ob_pr_sex = male_pr/female_pr
 
 View(ob_pr_sex)
+
 
 ```
 

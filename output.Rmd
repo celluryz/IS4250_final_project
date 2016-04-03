@@ -1,0 +1,53 @@
+```{r}
+library(utils)
+library(dplyr)
+library(foreign)
+
+library(utils)
+library(dplyr)
+library(foreign)
+
+origin_data_09 <- read.xport("~/Documents/personal/Y4S2/IS4250/CDBRFS09.XPT")
+origin_data_07 <- read.xport("~/Documents/personal/Y4S2/IS4250/CDBRFS07.XPT")
+origin_data_05 <- read.xport("~/Documents/personal/Y4S2/IS4250/CDBRFS05.XPT")
+origin_data_03 <- read.xport("~/Documents/personal/Y4S2/IS4250/cdbrfs03.XPT")
+
+sample_data_09 <- dplyr::select(origin_data_09, X_STATE, VETERAN2,  AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, X_FRTSERV, X_BMI4)
+sample_data_09 <- dplyr::rename(sample_data_09, VETERAN = VETERAN2)
+sample_data_09 <- dplyr::filter(sample_data_09, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
+
+sample_data_07 <- dplyr::select(origin_data_07, X_STATE, VETERAN1, AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, X_FRTSERV, X_BMI4)
+sample_data_07 <- dplyr::rename(sample_data_07, VETERAN = VETERAN1)
+sample_data_07 <- dplyr::filter(sample_data_07, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
+
+sample_data_05 <- dplyr::select(origin_data_05, X_STATE, VETERAN, AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, X_FRTSERV, X_BMI4)
+sample_data_05 <- dplyr::filter(sample_data_05, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
+
+sample_data_03 <- dplyr::select(origin_data_03, X_STATE, VETERAN, AGE, EMPLOY, HTM2, WTKG, SEX, RACE2, INCOME2, EDUCA, SMOKEDAY, JOBACTIV, X_FRTSERV, X_BMI3)
+sample_data_03 <- dplyr::rename(sample_data_03, HTM3 = HTM2)
+sample_data_03 <- dplyr::rename(sample_data_03, WTKG2 = WTKG)
+sample_data_03 <- dplyr::rename(sample_data_03, SMOKDAY2 = SMOKEDAY)
+sample_data_03 <- dplyr::rename(sample_data_03, X_BMI4 = X_BMI3)
+sample_data_03 <- dplyr::filter(sample_data_03, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
+
+sample_data_all <- dplyr::bind_rows(sample_data_09, sample_data_07)
+sample_data_all <- dplyr::bind_rows(sample_data_all, sample_data_05)
+sample_data_all <- dplyr::bind_rows(sample_data_all, sample_data_03)
+
+sample_data_09 <- dplyr::filter(sample_data_09, VETERAN != 1 & VETERAN != 2 & VETERAN != 3) 
+sample_data_07 <- dplyr::filter(sample_data_07, VETERAN != 1) 
+sample_data_05 <- dplyr::filter(sample_data_05, VETERAN != 1) 
+sample_data_03 <- dplyr::filter(sample_data_03, VETERAN != 1) 
+sample_data_all <- dplyr::bind_rows(sample_data_09, sample_data_07)
+sample_data_all <- dplyr::bind_rows(sample_data_all, sample_data_05)
+sample_data_all <- dplyr::bind_rows(sample_data_all, sample_data_03)
+
+
+
+sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 18.5) 
+View(sample_data_all)
+
+```
+
+
+

@@ -8,11 +8,12 @@ library(dplyr)
 library(foreign)
 
 origin_data_09 <- read.xport("~/Documents/personal/Y4S2/IS4250/CDBRFS09.XPT")
-View(origin_data_09)
+
 
 sample_data_09 <- dplyr::select(origin_data_09, X_STATE, VETERAN2,  AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, X_FRTSERV, X_BMI4)
 sample_data_09 <- dplyr::rename(sample_data_09, VETERAN = VETERAN2)
 sample_data_09 <- dplyr::filter(sample_data_09, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
+
 
 sample_data_all <- dplyr::filter(sample_data_09, VETERAN != 1 & VETERAN != 2 & VETERAN != 3) 
 sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 1850 & X_BMI4 != 9999 ) 
@@ -26,6 +27,7 @@ all_pr = all_obese_count / all_count
 
 View(all_pr)
 
+
 ```
 
 ```{r}
@@ -36,9 +38,6 @@ female_obese <- dplyr::count(female_data_obese)
 female_total <- dplyr::count(female_data)
 female_pr = female_obese / female_total
 
-View(female_pr)
-
-
 male_data <- dplyr::filter(sample_data_all, SEX==1)
 male_data_obese <- dplyr::filter(male_data, X_BMI4 >= 3000)
 
@@ -46,13 +45,119 @@ male_obese <- dplyr::count(male_data_obese)
 male_total <- dplyr::count(male_data)
 male_pr = male_obese / male_total
 
-View(male_pr)
+ob_pr_sex_female = female_pr/female_pr
+ob_pr_sex_male_female = male_pr/female_pr
 
-ob_pr_sex = male_pr/female_pr
+ob_pr_sex <- dplyr::bind_rows(female_pr , male_pr)
+ob_pr_sex_adjusted <- dplyr::bind_rows(ob_pr_sex_female, ob_pr_sex_male_female)
 
 View(ob_pr_sex)
+View(ob_pr_sex_adjusted)
 
 ```
 
+```{r}
+young_age_data <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 29)
+young_age_data_obese <- dplyr::filter(young_age_data, X_BMI4 >= 3000)
+young_obese <- dplyr::count(young_age_data_obese)
+young_total <- dplyr::count(young_age_data)
+young_age_pr = young_obese/young_total 
 
+middle_age_data <- dplyr::filter(sample_data_all, AGE >= 30 & AGE <= 44)
+middle_age_data_obese <- dplyr::filter(middle_age_data, X_BMI4 >= 3000)
+middle_obese <- dplyr::count(middle_age_data_obese)
+middle_total <- dplyr::count(middle_age_data)
+middle_age_pr = middle_obese/middle_total
+
+old_age_data <- dplyr::filter(sample_data_all, AGE >= 45 & AGE <= 65)
+old_age_data_obese <- dplyr::filter(old_age_data, X_BMI4 >= 3000)
+old_obese <- dplyr::count(old_age_data_obese)
+old_total <- dplyr::count(old_age_data)
+old_age_pr = old_obese/old_total
+
+ob_pr_age_young = young_age_pr/young_age_pr
+ob_pr_age_middle_young = middle_age_pr/young_age_pr
+ob_pr_age_old_young = old_age_pr/young_age_pr
+
+ob_pr_income <- dplyr::bind_rows(young_age_pr, middle_age_pr)
+ob_pr_income <- dplyr::bind_rows(ob_pr_income,old_age_pr)
+
+ob_pr_age_adjusted <- dplyr::bind_rows(ob_pr_age_young,ob_pr_age_middle_young)
+ob_pr_age_adjusted <- dplyr::bind_rows(ob_pr_age_adjusted,ob_pr_age_old_young)
+
+View(ob_pr_age)
+View(ob_pr_age_adjusted)
+```
+
+```{r}
+income <- dplyr::filter(sample_data_all, INCOME2 != 77 & INCOME2 != 99)
+
+low_income_data <- dplyr::filter(income, INCOME2 < 6)
+low_income_data_obese <- dplyr::filter(low_income_data, X_BMI4 >= 3000)
+low_income_obese <- dplyr::count(low_income_data_obese)
+low_income_total <- dplyr::count(low_income_data)
+low_income_pr = low_income_obese/low_income_total 
+
+middle_income_data <- dplyr::filter(income, INCOME2 > 6 & INCOME2 < 8)
+middle_income_data_obese <- dplyr::filter(middle_income_data, X_BMI4 >= 3000)
+middle_income_obese <- dplyr::count(middle_income_data_obese)
+middle_income_total <- dplyr::count(middle_income_data)
+middle_income_pr = middle_income_obese/middle_income_total
+
+high_income_data <- dplyr::filter(income, INCOME2 >= 8)
+high_income_data_obese <- dplyr::filter(high_income_data, X_BMI4 >= 3000)
+high_income_obese <- dplyr::count(high_income_data_obese)
+high_income_total <- dplyr::count(high_income_data)
+high_income_pr = high_income_obese/high_income_total
+
+ob_pr_income_high = high_income_pr/high_income_pr
+ob_pr_income_middle_high = middle_income_pr/high_income_pr
+ob_pr_income_low_high = low_income_pr/high_income_pr
+
+ob_pr_income <- dplyr::bind_rows(low_income_pr, middle_income_pr)
+ob_pr_income <- dplyr::bind_rows(ob_pr_income,high_income_pr)
+
+
+ob_pr_income_adjusted <- dplyr::bind_rows(ob_pr_income_low_high, ob_pr_income_middle_high)
+ob_pr_income_adjusted <- dplyr::bind_rows(ob_pr_income_adjusted,ob_pr_income_high)
+
+View(ob_pr_income)
+View(ob_pr_income_adjusted)
+```
+
+```{r}
+education <- dplyr::filter(sample_data_all, EDUCA != 9)
+
+low_edu_data <- dplyr::filter(education, EDUCA < 4)
+low_edu_data_obese <- dplyr::filter(low_edu_data, X_BMI4 >= 3000)
+low_edu_obese <- dplyr::count(low_edu_data_obese)
+low_edu_total <- dplyr::count(low_edu_data)
+low_edu_pr = low_edu_obese/low_edu_total 
+
+middle_edu_data <- dplyr::filter(education, EDUCA >= 4 & EDUCA <6)
+middle_edu_data_obese <- dplyr::filter(middle_edu_data, X_BMI4 >= 3000)
+middle_edu_obese <- dplyr::count(middle_edu_data_obese)
+middle_edu_total <- dplyr::count(middle_edu_data)
+middle_edu_pr = middle_edu_obese/middle_edu_total 
+
+high_edu_data <- dplyr::filter(education, EDUCA == 6)
+high_edu_data_obese <- dplyr::filter(high_edu_data, X_BMI4 >= 3000)
+high_edu_obese <- dplyr::count(high_edu_data_obese)
+high_edu_total <- dplyr::count(high_edu_data)
+high_edu_pr = high_edu_obese/high_edu_total 
+
+ob_pr_edu_high = high_edu_pr/high_edu_pr
+ob_pr_edu_middle_high = middle_edu_pr/high_edu_pr
+ob_pr_edu_low_high = low_edu_pr/high_edu_pr
+
+ob_pr_edu <- dplyr::bind_rows(low_edu_pr, middle_edu_pr)
+ob_pr_edu <- dplyr::bind_rows(ob_pr_edu,high_edu_pr)
+
+
+ob_pr_edu_adjusted <- dplyr::bind_rows(ob_pr_edu_low_high, ob_pr_edu_middle_high)
+ob_pr_edu_adjusted <- dplyr::bind_rows(ob_pr_edu_adjusted,ob_pr_edu_high)
+
+View(ob_pr_edu)
+View(ob_pr_edu_adjusted)
+```
 

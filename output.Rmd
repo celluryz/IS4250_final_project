@@ -27,6 +27,7 @@ all_pr = all_obese_count / all_count
 
 View(all_pr)
 
+
 ```
 
 ```{r}
@@ -52,7 +53,6 @@ View(male_pr)
 ob_pr_sex = male_pr/female_pr
 
 View(ob_pr_sex)
-
 
 ```
 

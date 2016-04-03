@@ -42,11 +42,14 @@ sample_data_all <- dplyr::bind_rows(sample_data_09, sample_data_07)
 sample_data_all <- dplyr::bind_rows(sample_data_all, sample_data_05)
 sample_data_all <- dplyr::bind_rows(sample_data_all, sample_data_03)
 
+sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 1850 & X_BMI4 != 9999 ) 
 
+all_obese <- dplyr::filter(sample_data_all, X_BMI4 >= 3000)
+all_obese_count <- dplyr::count(all_obese)
+all_count <- dplyr::count(sample_data_all)
+all_pr = all_obese_count / all_count
 
-sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 18.5) 
-View(sample_data_all)
-
+View(all_pr)
 ```
 
 

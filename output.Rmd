@@ -125,3 +125,39 @@ View(ob_pr_income)
 View(ob_pr_income_adjusted)
 ```
 
+```{r}
+education <- dplyr::filter(sample_data_all, EDUCA != 9)
+
+low_edu_data <- dplyr::filter(education, EDUCA < 4)
+low_edu_data_obese <- dplyr::filter(low_edu_data, X_BMI4 >= 3000)
+low_edu_obese <- dplyr::count(low_edu_data_obese)
+low_edu_total <- dplyr::count(low_edu_data)
+low_edu_pr = low_edu_obese/low_edu_total 
+
+middle_edu_data <- dplyr::filter(education, EDUCA >= 4 & EDUCA <6)
+middle_edu_data_obese <- dplyr::filter(middle_edu_data, X_BMI4 >= 3000)
+middle_edu_obese <- dplyr::count(middle_edu_data_obese)
+middle_edu_total <- dplyr::count(middle_edu_data)
+middle_edu_pr = middle_edu_obese/middle_edu_total 
+
+high_edu_data <- dplyr::filter(education, EDUCA == 6)
+high_edu_data_obese <- dplyr::filter(high_edu_data, X_BMI4 >= 3000)
+high_edu_obese <- dplyr::count(high_edu_data_obese)
+high_edu_total <- dplyr::count(high_edu_data)
+high_edu_pr = high_edu_obese/high_edu_total 
+
+ob_pr_edu_high = high_edu_pr/high_edu_pr
+ob_pr_edu_middle_high = middle_edu_pr/high_edu_pr
+ob_pr_edu_low_high = low_edu_pr/high_edu_pr
+
+ob_pr_edu <- dplyr::bind_rows(low_edu_pr, middle_edu_pr)
+ob_pr_edu <- dplyr::bind_rows(ob_pr_edu,high_edu_pr)
+
+
+ob_pr_edu_adjusted <- dplyr::bind_rows(ob_pr_edu_low_high, ob_pr_edu_middle_high)
+ob_pr_edu_adjusted <- dplyr::bind_rows(ob_pr_edu_adjusted,ob_pr_edu_high)
+
+View(ob_pr_edu)
+View(ob_pr_edu_adjusted)
+```
+

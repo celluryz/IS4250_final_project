@@ -15,8 +15,16 @@ sample_data_09 <- dplyr::rename(sample_data_09, VETERAN = VETERAN2)
 sample_data_09 <- dplyr::filter(sample_data_09, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
 
 sample_data_all <- dplyr::filter(sample_data_09, VETERAN != 1 & VETERAN != 2 & VETERAN != 3) 
-sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 18.5) 
+sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 1850 & X_BMI4 != 9999 ) 
 View(sample_data_all)
+
+
+all_obese <- dplyr::filter(sample_data_all, X_BMI4 >= 3000)
+all_obese_count <- dplyr::count(all_obese)
+all_count <- dplyr::count(sample_data_all)
+all_pr = all_obese_count / all_count
+
+View(all_pr)
 
 ```
 
@@ -30,6 +38,7 @@ female_pr = female_obese / female_total
 
 View(female_pr)
 
+
 male_data <- dplyr::filter(sample_data_all, SEX==1)
 male_data_obese <- dplyr::filter(male_data, X_BMI4 >= 3000)
 
@@ -42,6 +51,7 @@ View(male_pr)
 ob_pr_sex = male_pr/female_pr
 
 View(ob_pr_sex)
+
 ```
 
 

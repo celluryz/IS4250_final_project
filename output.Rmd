@@ -161,3 +161,29 @@ View(ob_pr_edu)
 View(ob_pr_edu_adjusted)
 ```
 
+```{r}
+smoke <- dplyr::filter(sample_data_all, SMOKDAY2 != 9 & (SMOKDAY2 == 1 | SMOKDAY2 == 2))
+smoke_obese_data <- dplyr::filter(smoke, X_BMI4 >= 3000)
+
+smoke_obese <- dplyr::count(smoke_obese_data)
+smoke_total <- dplyr::count(smoke)
+smoke_pr = smoke_obese/smoke_total
+
+nonsmoke <- dplyr::filter(sample_data_all, SMOKDAY2 != 9 & SMOKDAY2 != 1 & SMOKDAY2 != 2)
+nonsmoke_obese_data <- dplyr::filter(nonsmoke, X_BMI4 >= 3000)
+
+nonsmoke_obese <- dplyr::count(nonsmoke_obese_data)
+nonsmoke_total <- dplyr::count(nonsmoke)
+nonsmoke_pr = nonsmoke_obese / nonsmoke_total
+
+
+ob_pr_smoke = smoke_pr/smoke_pr
+ob_pr_nonsmoke_smoke = nonsmoke_pr/smoke_pr
+
+ob_pr_smoke_table <- dplyr::bind_rows(smoke_pr, nonsmoke_pr)
+ob_pr_smoke_table_adjusted <- dplyr::bind_rows(ob_pr_smoke , ob_pr_nonsmoke_smoke)
+
+View(ob_pr_smoke_table)
+View(ob_pr_smoke_table_adjusted)
+```
+

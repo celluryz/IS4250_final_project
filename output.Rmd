@@ -241,5 +241,30 @@ View(ob_pr_vigorousLTPA_table_adjusted)
 
 ```
 
+```{r}
+physicalDemandJob <- dplyr::filter(sample_data_all, JOBACTIV == 2 | JOBACTIV == 3)
+physicalDemandJob_obese_data <- dplyr::filter(physicalDemandJob, X_BMI4 >= 3000)
+
+physicalDemandJob_obese <- dplyr::count(physicalDemandJob_obese_data)
+physicalDemandJob_total <- dplyr::count(physicalDemandJob)
+physicalDemandJob_pr = physicalDemandJob_obese/physicalDemandJob_total
+
+nonphysicalDemandJob <- dplyr::filter(sample_data_all, JOBACTIV == 1)
+nonphysicalDemandJob_obese_data <- dplyr::filter(nonphysicalDemandJob, X_BMI4 >= 3000)
+
+nonphysicalDemandJob_obese <- dplyr::count(nonphysicalDemandJob_obese_data)
+nonphysicalDemandJob_total <- dplyr::count(nonphysicalDemandJob)
+nonphysicalDemandJob_pr = nonphysicalDemandJob_obese / nonphysicalDemandJob_total
+
+
+ob_pr_nonphysicalDemandJob_nonphysicalDemandJob = nonphysicalDemandJob_pr/nonphysicalDemandJob_pr
+ob_pr_physicalDemandJob_nonphysicalDemandJob = physicalDemandJob_pr/nonphysicalDemandJob_pr
+
+ob_pr_physicalDemandJob_table <- dplyr::bind_rows(physicalDemandJob_pr, nonphysicalDemandJob_pr)
+ob_pr_physicalDemandJob_table_adjusted <- dplyr::bind_rows(ob_pr_nonphysicalDemandJob_nonphysicalDemandJob, ob_pr_physicalDemandJob_nonphysicalDemandJob)
+
+View(ob_pr_vigorousLTPA_table)
+View(ob_pr_vigorousLTPA_table_adjusted)
+```
 
 

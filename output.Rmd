@@ -214,7 +214,32 @@ View(ob_pr_frequentFruit_table_adjusted)
 
 ```
 
+```{r}
+vigorousLTPA <- dplyr::filter(sample_data_all, VIGCAT_ == 1)
+vigorousLTPA_obese_data <- dplyr::filter(vigorousLTPA, X_BMI4 >= 3000)
 
+vigorousLTPA_obese <- dplyr::count(vigorousLTPA_obese_data)
+vigorousLTPA_total <- dplyr::count(vigorousLTPA)
+vigorousLTPA_pr = vigorousLTPA_obese/vigorousLTPA_total
+
+nonvigorousLTPA <- dplyr::filter(sample_data_all, VIGCAT_ == 2 | VIGCAT_ == 3)
+nonvigorousLTPA_obese_data <- dplyr::filter(nonvigorousLTPA, X_BMI4 >= 3000)
+
+nonvigorousLTPA_obese <- dplyr::count(nonvigorousLTPA_obese_data)
+nonvigorousLTPA_total <- dplyr::count(nonvigorousLTPA)
+nonvigorousLTPA_pr = nonvigorousLTPA_obese / nonvigorousLTPA_total
+
+
+ob_pr_nonvigorousLTPA_nonvigorousLTPA = nonvigorousLTPA_pr/nonvigorousLTPA_pr
+ob_pr_vigorousLTPA_nonvigorousLTPA = vigorousLTPA_pr/nonvigorousLTPA_pr
+
+ob_pr_vigorousLTPA_table <- dplyr::bind_rows(vigorousLTPA_pr, nonvigorousLTPA_pr)
+ob_pr_vigorousLTPA_table_adjusted <- dplyr::bind_rows(ob_pr_nonvigorousLTPA_nonvigorousLTPA, ob_pr_vigorousLTPA_nonvigorousLTPA)
+
+View(ob_pr_vigorousLTPA_table)
+View(ob_pr_vigorousLTPA_table_adjusted)
+
+```
 
 
 

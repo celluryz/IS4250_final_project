@@ -90,6 +90,40 @@ View(ob_pr_age_adjusted)
 ```
 
 ```{r}
+white_data <- dplyr::filter(sample_data_all, RACE2 == 1)
+white_data_obese <- dplyr::filter(white_data, X_BMI4 >= 3000)
+white_obese <- dplyr::count(white_data_obese)
+white_total <- dplyr::count(white_data)
+white_pr = white_obese/white_total 
+
+hispanic_data <- dplyr::filter(sample_data_all, RACE2 == 8)
+hispanic_data_obese <- dplyr::filter(hispanic_data, X_BMI4 >= 3000)
+hispanic_obese <- dplyr::count(hispanic_data_obese)
+hispanic_total <- dplyr::count(hispanic_data)
+hispanic_pr = hispanic_obese/hispanic_total
+
+other_race_data <- dplyr::filter(sample_data_all, RACE2 != 8 & RACE2 != 1)
+other_race_data_obese <- dplyr::filter(other_race_data, X_BMI4 >= 3000)
+other_race_obese <- dplyr::count(other_race_data_obese)
+other_race_total <- dplyr::count(other_race_data)
+other_race_pr = other_race_obese/other_race_total
+
+ob_pr_age_white = white_pr/white_pr
+ob_pr_age_hispanic = hispanic_pr/white_pr
+ob_pr_age_other_race = other_race_pr/white_pr
+
+ob_pr_race <- dplyr::bind_rows(white_pr, hispanic_pr)
+ob_pr_race <- dplyr::bind_rows(ob_pr_race, ob_pr_age_other_race)
+
+ob_pr_race_adjusted <- dplyr::bind_rows(ob_pr_age_white,ob_pr_age_hispanic)
+ob_pr_race_adjusted <- dplyr::bind_rows(ob_pr_race_adjusted,ob_pr_age_other_race)
+
+View(ob_pr_race)
+View(ob_pr_race_adjusted)
+```
+
+
+```{r}
 income <- dplyr::filter(sample_data_all, INCOME2 != 77 & INCOME2 != 99)
 
 low_income_data <- dplyr::filter(income, INCOME2 < 6)

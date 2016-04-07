@@ -1,14 +1,15 @@
+---
+title: "IS4250/Group 21"
+output: md_document
+---
+
 ```{r}
 library(utils)
 library(dplyr)
 library(foreign)
 
-library(utils)
-library(dplyr)
-library(foreign)
-
+## import data 
 origin_data_09 <- read.xport("CDBRFS09.XPT")
-
 
 sample_data_09 <- dplyr::select(origin_data_09, X_STATE, VETERAN2,  AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, VIGCAT_, X_FRTINDX, X_BMI4)
 sample_data_09 <- dplyr::rename(sample_data_09, VETERAN = VETERAN2)
@@ -17,20 +18,22 @@ sample_data_09 <- dplyr::filter(sample_data_09, X_STATE == 53, EMPLOY == 1 | EMP
 
 sample_data_all <- dplyr::filter(sample_data_09, VETERAN != 1 & VETERAN != 2 & VETERAN != 3) 
 sample_data_all <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 64, X_BMI4 >= 1850 & X_BMI4 != 9999 ) 
-View(sample_data_all)
 
-
+## Sample data
 all_obese <- dplyr::filter(sample_data_all, X_BMI4 >= 3000)
 all_obese_count <- dplyr::count(all_obese)
 all_count <- dplyr::count(sample_data_all)
 all_pr = all_obese_count / all_count
 
-View(all_pr)
-
+all_occupations = c("All")
+result_all = data.frame(all_occupations, all_pr)
+names(result_all)[2] <- "Prevalence Ratio"
 
 ```
 
 ```{r}
+## Prevelance Ratio by Sex
+
 female_data <- dplyr::filter(sample_data_all, SEX==2)
 female_data_obese <- dplyr::filter(female_data, X_BMI4 >= 3000)
 
@@ -51,12 +54,15 @@ ob_pr_sex_male_female = male_pr/female_pr
 ob_pr_sex <- dplyr::bind_rows(female_pr , male_pr)
 ob_pr_sex_adjusted <- dplyr::bind_rows(ob_pr_sex_female, ob_pr_sex_male_female)
 
-View(ob_pr_sex)
-View(ob_pr_sex_adjusted)
+sex = c("Female","Male")
+result_sex=data.frame(sex, ob_pr_sex, ob_pr_sex_adjusted)
+names(result_sex)[2] <- "Prevalence Ratio"
+names(result_sex)[3] <- "Adjusted Prevalence Ratio"
 
 ```
 
 ```{r}
+## Prevelance Ratio by Age
 young_age_data <- dplyr::filter(sample_data_all, AGE >= 18 & AGE <= 29)
 young_age_data_obese <- dplyr::filter(young_age_data, X_BMI4 >= 3000)
 young_obese <- dplyr::count(young_age_data_obese)
@@ -79,17 +85,22 @@ ob_pr_age_young = young_age_pr/young_age_pr
 ob_pr_age_middle_young = middle_age_pr/young_age_pr
 ob_pr_age_old_young = old_age_pr/young_age_pr
 
-ob_pr_income <- dplyr::bind_rows(young_age_pr, middle_age_pr)
-ob_pr_income <- dplyr::bind_rows(ob_pr_income,old_age_pr)
+ob_pr_age <- dplyr::bind_rows(young_age_pr, middle_age_pr)
+ob_pr_age <- dplyr::bind_rows(ob_pr_age,old_age_pr)
 
 ob_pr_age_adjusted <- dplyr::bind_rows(ob_pr_age_young,ob_pr_age_middle_young)
 ob_pr_age_adjusted <- dplyr::bind_rows(ob_pr_age_adjusted,ob_pr_age_old_young)
 
-View(ob_pr_age)
-View(ob_pr_age_adjusted)
+age = c("18-29", "30-44", "45-64")
+result_age = data.frame(age, ob_pr_age, ob_pr_age_adjusted)
+names(result_age)[2] <- "Prevalence Ratio"
+names(result_age)[3] <- "Adjusted Prevalence Ratio"
+
 ```
 
 ```{r}
+## Prevelance Ratio by Race
+
 white_data <- dplyr::filter(sample_data_all, RACE2 == 1)
 white_data_obese <- dplyr::filter(white_data, X_BMI4 >= 3000)
 white_obese <- dplyr::count(white_data_obese)
@@ -113,17 +124,22 @@ ob_pr_age_hispanic = hispanic_pr/white_pr
 ob_pr_age_other_race = other_race_pr/white_pr
 
 ob_pr_race <- dplyr::bind_rows(white_pr, hispanic_pr)
-ob_pr_race <- dplyr::bind_rows(ob_pr_race, ob_pr_age_other_race)
+ob_pr_race <- dplyr::bind_rows(ob_pr_race, other_race_pr)
 
 ob_pr_race_adjusted <- dplyr::bind_rows(ob_pr_age_white,ob_pr_age_hispanic)
 ob_pr_race_adjusted <- dplyr::bind_rows(ob_pr_race_adjusted,ob_pr_age_other_race)
 
-View(ob_pr_race)
-View(ob_pr_race_adjusted)
+race = c("White", "Hispanic", "Other")
+result_race = data.frame(race, ob_pr_race, ob_pr_race_adjusted)
+names(result_race)[2] <- "Prevalence Ratio"
+names(result_race)[3] <- "Adjusted Prevalence Ratio"
+
 ```
 
 
 ```{r}
+## Prevelance Ratio by Annual Household Income
+
 income <- dplyr::filter(sample_data_all, INCOME2 != 77 & INCOME2 != 99)
 
 low_income_data <- dplyr::filter(income, INCOME2 < 6)
@@ -155,11 +171,16 @@ ob_pr_income <- dplyr::bind_rows(ob_pr_income,high_income_pr)
 ob_pr_income_adjusted <- dplyr::bind_rows(ob_pr_income_low_high, ob_pr_income_middle_high)
 ob_pr_income_adjusted <- dplyr::bind_rows(ob_pr_income_adjusted,ob_pr_income_high)
 
-View(ob_pr_income)
-View(ob_pr_income_adjusted)
+household_income = c("< 35000", "35000-74999", ">= 75000")
+result_income = data.frame(household_income, ob_pr_income, ob_pr_income_adjusted)
+names(result_income)[2] <- "Prevalence Ratio"
+names(result_income)[3] <- "Adjusted Prevalence Ratio"
+
 ```
 
 ```{r}
+## Prevelance Ratio by Education Attachment
+
 education <- dplyr::filter(sample_data_all, EDUCA != 9)
 
 low_edu_data <- dplyr::filter(education, EDUCA < 4)
@@ -186,16 +207,17 @@ ob_pr_edu_low_high = low_edu_pr/high_edu_pr
 
 ob_pr_edu <- dplyr::bind_rows(low_edu_pr, middle_edu_pr)
 ob_pr_edu <- dplyr::bind_rows(ob_pr_edu,high_edu_pr)
-
-
 ob_pr_edu_adjusted <- dplyr::bind_rows(ob_pr_edu_low_high, ob_pr_edu_middle_high)
 ob_pr_edu_adjusted <- dplyr::bind_rows(ob_pr_edu_adjusted,ob_pr_edu_high)
 
-View(ob_pr_edu)
-View(ob_pr_edu_adjusted)
+education_attachment = c("Less than grade 12", "High school or some college", "College degree or higher")
+result_education = data.frame(education_attachment, ob_pr_edu, ob_pr_edu_adjusted)
+
 ```
 
 ```{r}
+## Prevelance Ratio by Smoke
+
 smoke <- dplyr::filter(sample_data_all, SMOKDAY2 == 1 | SMOKDAY2 == 2)
 smoke_obese_data <- dplyr::filter(smoke, X_BMI4 >= 3000)
 
@@ -217,11 +239,16 @@ ob_pr_nonsmoke_smoke = nonsmoke_pr/smoke_pr
 ob_pr_smoke_table <- dplyr::bind_rows(smoke_pr, nonsmoke_pr)
 ob_pr_smoke_table_adjusted <- dplyr::bind_rows(ob_pr_smoke , ob_pr_nonsmoke_smoke)
 
-View(ob_pr_smoke_table)
-View(ob_pr_smoke_table_adjusted)
+smoking_habit = c("Current smoker", "Non current smoker")
+result_smoke = data.frame(smoking_habit, ob_pr_smoke_table, ob_pr_smoke_table_adjusted)
+names(result_smoke)[2] <- "Prevalence Ratio"
+names(result_smoke)[3] <- "Adjusted Prevalence Ratio"
+
 ```
 
 ```{r}
+## Prevelance Ratio by level of Fruits and Vegetables intakes
+
 frequentFruit <- dplyr::filter(sample_data_all, X_FRTINDX == 4)
 frequentFruit_obese_data <- dplyr::filter(frequentFruit, X_BMI4 >= 3000)
 
@@ -240,15 +267,19 @@ nonfrequentFruit_pr = nonfrequentFruit_obese / nonfrequentFruit_total
 ob_pr_nonfrequentFruit_nonfrequentFruit = nonfrequentFruit_pr/nonfrequentFruit_pr
 ob_pr_frequentFruit_nonfrequentFruit = frequentFruit_pr/nonfrequentFruit_pr
 
-ob_pr_frequentFruit_table <- dplyr::bind_rows(frequentFruit_pr, nonfrequentFruit_pr)
+ob_pr_frequentFruit_table <- dplyr::bind_rows(nonfrequentFruit_pr, frequentFruit_pr)
 ob_pr_frequentFruit_table_adjusted <- dplyr::bind_rows(ob_pr_nonfrequentFruit_nonfrequentFruit, ob_pr_frequentFruit_nonfrequentFruit)
 
-View(ob_pr_frequentFruit_table)
-View(ob_pr_frequentFruit_table_adjusted)
+fruits_vegetables_consumption = c("Fruit and vegetable consumption < 5 servings/day", "Fruit and vegetable consumption >= 5 servings/day")
+result_fruit = data.frame(fruits_vegetables_consumption, ob_pr_frequentFruit_table, ob_pr_frequentFruit_table_adjusted)
 
+names(result_fruit)[2] <- "Prevalence Ratio"
+names(result_fruit)[3] <- "Adjusted Prevalence Ratio"
 ```
 
 ```{r}
+## Prevelance Ratio by level of Leisure-time Physical Activities
+
 vigorousLTPA <- dplyr::filter(sample_data_all, VIGCAT_ == 1)
 vigorousLTPA_obese_data <- dplyr::filter(vigorousLTPA, X_BMI4 >= 3000)
 
@@ -267,15 +298,19 @@ nonvigorousLTPA_pr = nonvigorousLTPA_obese / nonvigorousLTPA_total
 ob_pr_nonvigorousLTPA_nonvigorousLTPA = nonvigorousLTPA_pr/nonvigorousLTPA_pr
 ob_pr_vigorousLTPA_nonvigorousLTPA = vigorousLTPA_pr/nonvigorousLTPA_pr
 
-ob_pr_vigorousLTPA_table <- dplyr::bind_rows(vigorousLTPA_pr, nonvigorousLTPA_pr)
+ob_pr_vigorousLTPA_table <- dplyr::bind_rows(nonvigorousLTPA_pr, vigorousLTPA_pr)
 ob_pr_vigorousLTPA_table_adjusted <- dplyr::bind_rows(ob_pr_nonvigorousLTPA_nonvigorousLTPA, ob_pr_vigorousLTPA_nonvigorousLTPA)
 
-View(ob_pr_vigorousLTPA_table)
-View(ob_pr_vigorousLTPA_table_adjusted)
+VigorousLeisureTimePhysicalActivity = c("<20 min/d and <3 times/wk", " >= 20 min/d and >= 3 times/wk")
+result_LTPA = data.frame(VigorousLeisureTimePhysicalActivity, ob_pr_vigorousLTPA_table, ob_pr_vigorousLTPA_table_adjusted)
 
+names(result_LTPA)[2] <- "Prevalence Ratio"
+names(result_LTPA)[3] <- "Adjusted Prevalence Ratio"
 ```
 
 ```{r}
+## Prevelance Ratio by Occupational Physical Activities
+
 physicalDemandJob <- dplyr::filter(sample_data_all, JOBACTIV == 2 | JOBACTIV == 3)
 physicalDemandJob_obese_data <- dplyr::filter(physicalDemandJob, X_BMI4 >= 3000)
 
@@ -294,11 +329,39 @@ nonphysicalDemandJob_pr = nonphysicalDemandJob_obese / nonphysicalDemandJob_tota
 ob_pr_nonphysicalDemandJob_nonphysicalDemandJob = nonphysicalDemandJob_pr/nonphysicalDemandJob_pr
 ob_pr_physicalDemandJob_nonphysicalDemandJob = physicalDemandJob_pr/nonphysicalDemandJob_pr
 
-ob_pr_physicalDemandJob_table <- dplyr::bind_rows(physicalDemandJob_pr, nonphysicalDemandJob_pr)
+ob_pr_physicalDemandJob_table <- dplyr::bind_rows(nonphysicalDemandJob_pr, physicalDemandJob_pr)
 ob_pr_physicalDemandJob_table_adjusted <- dplyr::bind_rows(ob_pr_nonphysicalDemandJob_nonphysicalDemandJob, ob_pr_physicalDemandJob_nonphysicalDemandJob)
 
-View(ob_pr_vigorousLTPA_table)
-View(ob_pr_vigorousLTPA_table_adjusted)
+occupationalPhysicalActivity = c("Nonphysically demanding", "Physically demanding")
+result_OPA = data.frame(occupationalPhysicalActivity, ob_pr_physicalDemandJob_table, ob_pr_physicalDemandJob_table_adjusted)
+
+names(result_OPA)[2] <- "Prevalence Ratio"
+names(result_OPA)[3] <- "Adjusted Prevalence Ratio"
+```
+
+```{r}
+## In below tables, the 2nd column represents the prevelance ratio of all the sample that meets the requirement corresponding in 1st column. The 3 column is the adjusted ratio. If one has a value 1 in that column, it means it is the reference ratio.
+
+## Sample data Prevalence Ratio
+result_all
+## Prevelance Ratio by Sex
+result_sex
+## Prevelance Ratio by Age
+result_age
+## Prevelance Ratio by Race
+result_race
+## Prevelance Ratio by Annual Household Income
+result_income
+## Prevelance Ratio by Education Attachment
+result_education
+## Prevelance Ratio by Smoke
+result_smoke
+## Prevelance Ratio by level of Fruits and Vegetables intakes
+result_fruit
+## Prevelance Ratio by level of Leisure-time Physical Activities
+result_LTPA
+## Prevelance Ratio by Occupational Physical Activities
+result_OPA
 ```
 
 

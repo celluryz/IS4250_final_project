@@ -10,7 +10,7 @@ library(foreign)
 origin_data_09 <- read.xport("~/Documents/personal/Y4S2/IS4250/CDBRFS09.XPT")
 
 
-sample_data_09 <- dplyr::select(origin_data_09, X_STATE, VETERAN2,  AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, X_FRTSERV, X_BMI4)
+sample_data_09 <- dplyr::select(origin_data_09, X_STATE, VETERAN2,  AGE, EMPLOY, HTM3, WTKG2, SEX, RACE2, INCOME2, EDUCA, SMOKDAY2, JOBACTIV, X_FRTINDX, X_BMI4)
 sample_data_09 <- dplyr::rename(sample_data_09, VETERAN = VETERAN2)
 sample_data_09 <- dplyr::filter(sample_data_09, X_STATE == 53, EMPLOY == 1 | EMPLOY == 2) 
 
@@ -186,4 +186,32 @@ ob_pr_smoke_table_adjusted <- dplyr::bind_rows(ob_pr_smoke , ob_pr_nonsmoke_smok
 View(ob_pr_smoke_table)
 View(ob_pr_smoke_table_adjusted)
 ```
+
+```{r}
+frequentFruit <- dplyr::filter(sample_data_all, X_FRTINDX != 9 & X_FRTINDX == 4)
+frequentFruit_obese_data <- dplyr::filter(frequentFruit, X_BMI4 >= 3000)
+
+frequentFruit_obese <- dplyr::count(frequentFruit_obese_data)
+frequentFruit_total <- dplyr::count(frequentFruit)
+frequentFruit_pr = frequentFruit_obese/frequentFruit_total
+
+nonfrequentFruit <- dplyr::filter(sample_data_all, X_FRTINDX != 9 & (X_FRTINDX == 1 | X_FRTINDX ==2 | X_FRTINDX == 3))
+nonfrequentFruit_obese_data <- dplyr::filter(nonfrequentFruit, X_BMI4 >= 3000)
+
+nonfrequentFruit_obese <- dplyr::count(nonfrequentFruit_obese_data)
+nonfrequentFruit_total <- dplyr::count(nonfrequentFruit)
+nonfrequentFruit_pr = nonfrequentFruit_obese / nonfrequentFruit_total
+
+
+ob_pr_nonfrequentFruit_nonfrequentFruit = nonfrequentFruit_pr/nonfrequentFruit_pr
+ob_pr_frequentFruit_nonfrequentFruit = frequentFruit_pr/nonfrequentFruit_pr
+
+ob_pr_frequentFruit_table <- dplyr::bind_rows(frequentFruit_pr, nonfrequentFruit_pr)
+ob_pr_frequentFruit_table_adjusted <- dplyr::bind_rows(ob_pr_nonfrequentFruit_nonfrequentFruit, ob_pr_frequentFruit_nonfrequentFruit)
+
+View(ob_pr_frequentFruit_table)
+View(ob_pr_frequentFruit_table_adjusted)
+
+```
+
 

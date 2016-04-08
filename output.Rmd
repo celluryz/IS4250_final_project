@@ -78,7 +78,7 @@ middle_obese <- dplyr::count(middle_age_data_obese)
 middle_total <- dplyr::count(middle_age_data)
 middle_age_pr = middle_obese/middle_total
 
-old_age_data <- dplyr::filter(sample_data_all, AGE >= 45 & AGE <= 65)
+old_age_data <- dplyr::filter(sample_data_all, AGE >= 45 & AGE <= 64)
 old_age_data_obese <- dplyr::filter(old_age_data, X_BMI4 >= 3000)
 old_obese <- dplyr::count(old_age_data_obese)
 old_total <- dplyr::count(old_age_data)
@@ -151,7 +151,7 @@ low_income_obese <- dplyr::count(low_income_data_obese)
 low_income_total <- dplyr::count(low_income_data)
 low_income_pr = low_income_obese/low_income_total 
 
-middle_income_data <- dplyr::filter(income, INCOME2 > 6 & INCOME2 < 8)
+middle_income_data <- dplyr::filter(income, INCOME2 >= 6 & INCOME2 < 8)
 middle_income_data_obese <- dplyr::filter(middle_income_data, X_BMI4 >= 3000)
 middle_income_obese <- dplyr::count(middle_income_data_obese)
 middle_income_total <- dplyr::count(middle_income_data)
@@ -369,6 +369,9 @@ result_income$pr=as.numeric(format(round(result_income$pr,4), nsmall=4))
 ggplot(result_income, aes(household_income,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Household Income")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Househoud Income")
 ## Prevelance Ratio by Education Attachment
 result_education
+colnames(result_education) <- c("Prevalence Ratio", "pr")
+result_education$pr=as.numeric(format(round(result_education$pr,4), nsmall=4))
+ggplot(result_education, aes(education_attachment,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Education Attachment")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Educational Attachment")
 ## Prevelance Ratio by Smoke
 result_smoke
 colnames(result_smoke) <- c("Prevalence Ratio", "pr")

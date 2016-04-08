@@ -9,6 +9,7 @@ output: md_document
 library(utils)
 library(dplyr)
 library(foreign)
+library(ggplot2)
 
 ## import data 
 origin_data_09 <- read.xport("CDBRFS09.XPT")
@@ -348,22 +349,46 @@ names(result_OPA)[3] <- "Adjusted Prevalence Ratio"
 result_all
 ## Prevelance Ratio by Sex
 result_sex
+colnames(result_sex) <- c("Prevalence Ratio", "pr")
+result_sex$pr=as.numeric(format(round(result_sex$pr,4), nsmall=4))
+ggplot(result_sex, aes(sex,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Sex")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Sex")
 ## Prevelance Ratio by Age
 result_age
+colnames(result_age) <- c("Prevalence Ratio", "pr")
+result_age$pr=as.numeric(format(round(result_age$pr,4), nsmall=4))
+ggplot(result_age, aes(age,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Age")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Age")
 ## Prevelance Ratio by Race
 result_race
+colnames(result_race) <- c("Prevalence Ratio", "pr")
+result_race$pr=as.numeric(format(round(result_race$pr,4), nsmall=4))
+ggplot(result_race, aes(race,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Race")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Race")
 ## Prevelance Ratio by Annual Household Income
 result_income
+colnames(result_income) <- c("Prevalence Ratio", "pr")
+result_income$pr=as.numeric(format(round(result_income$pr,4), nsmall=4))
+ggplot(result_income, aes(household_income,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Household Income")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Househoud Income")
 ## Prevelance Ratio by Education Attachment
 result_education
 ## Prevelance Ratio by Smoke
 result_smoke
+colnames(result_smoke) <- c("Prevalence Ratio", "pr")
+result_smoke$pr=as.numeric(format(round(result_smoke$pr,4), nsmall=4))
+ggplot(result_smoke, aes(smoking_habit,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Smoking Habit")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Smoking Habit")
 ## Prevelance Ratio by level of Fruits and Vegetables intakes
 result_fruit
+colnames(result_fruit) <- c("Prevalence Ratio", "pr")
+result_fruit$pr=as.numeric(format(round(result_fruit$pr,4), nsmall=4))
+ggplot(result_fruit, aes(fruits_vegetables_consumption,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Fruit & Vegetable Consumption")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Fruit & Vegetable Consumption")
 ## Prevelance Ratio by level of Leisure-time Physical Activities
 result_LTPA
+colnames(result_LTPA) <- c("Prevalence Ratio", "pr")
+result_LTPA$pr=as.numeric(format(round(result_LTPA$pr,4), nsmall=4))
+ggplot(result_LTPA, aes(VigorousLeisureTimePhysicalActivity,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Vigorous Leisure Time Activity")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Vigorous Leisure Time Activity")
 ## Prevelance Ratio by Occupational Physical Activities
 result_OPA
+colnames(result_OPA) <- c("Prevalence Ratio", "pr")
+result_OPA$pr=as.numeric(format(round(result_OPA$pr,4), nsmall=4))
+ggplot(result_OPA, aes(occupationalPhysicalActivity,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Occupational Physical Activity")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Occupational Physical Activity")
 ```
 
 

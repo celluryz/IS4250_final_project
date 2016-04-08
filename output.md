@@ -15,6 +15,7 @@
     ##     intersect, setdiff, setequal, union
 
     library(foreign)
+    library(ggplot2)
 
     ## import data 
     origin_data_09 <- read.xport("CDBRFS09.XPT")
@@ -77,7 +78,7 @@
     middle_total <- dplyr::count(middle_age_data)
     middle_age_pr = middle_obese/middle_total
 
-    old_age_data <- dplyr::filter(sample_data_all, AGE >= 45 & AGE <= 65)
+    old_age_data <- dplyr::filter(sample_data_all, AGE >= 45 & AGE <= 64)
     old_age_data_obese <- dplyr::filter(old_age_data, X_BMI4 >= 3000)
     old_obese <- dplyr::count(old_age_data_obese)
     old_total <- dplyr::count(old_age_data)
@@ -143,7 +144,7 @@
     low_income_total <- dplyr::count(low_income_data)
     low_income_pr = low_income_obese/low_income_total 
 
-    middle_income_data <- dplyr::filter(income, INCOME2 > 6 & INCOME2 < 8)
+    middle_income_data <- dplyr::filter(income, INCOME2 >= 6 & INCOME2 < 8)
     middle_income_data_obese <- dplyr::filter(middle_income_data, X_BMI4 >= 3000)
     middle_income_obese <- dplyr::count(middle_income_data_obese)
     middle_income_total <- dplyr::count(middle_income_data)
@@ -335,6 +336,12 @@
     ## 1 Female        0.2703583                  1.000000
     ## 2   Male        0.2869479                  1.061361
 
+    colnames(result_sex) <- c("Prevalence Ratio", "pr")
+    result_sex$pr=as.numeric(format(round(result_sex$pr,4), nsmall=4))
+    ggplot(result_sex, aes(sex,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Sex")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Sex")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-1.png)  
+
     ## Prevelance Ratio by Age
     result_age
 
@@ -342,6 +349,12 @@
     ## 1 18-29        0.2317881                  1.000000
     ## 2 30-44        0.2720655                  1.173768
     ## 3 45-64        0.2857777                  1.232927
+
+    colnames(result_age) <- c("Prevalence Ratio", "pr")
+    result_age$pr=as.numeric(format(round(result_age$pr,4), nsmall=4))
+    ggplot(result_age, aes(age,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Age")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Age")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-2.png)  
 
     ## Prevelance Ratio by Race
     result_race
@@ -351,13 +364,25 @@
     ## 2 Hispanic        0.3214286                 1.1617479
     ## 3    Other        0.2508591                 0.9066868
 
+    colnames(result_race) <- c("Prevalence Ratio", "pr")
+    result_race$pr=as.numeric(format(round(result_race$pr,4), nsmall=4))
+    ggplot(result_race, aes(race,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Race")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Race")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-3.png)  
+
     ## Prevelance Ratio by Annual Household Income
     result_income
 
     ##   household_income Prevalence Ratio Adjusted Prevalence Ratio
     ## 1          < 35000        0.3174377                  1.332012
-    ## 2      35000-74999        0.3013871                  1.264662
+    ## 2      35000-74999        0.3035646                  1.273798
     ## 3         >= 75000        0.2383144                  1.000000
+
+    colnames(result_income) <- c("Prevalence Ratio", "pr")
+    result_income$pr=as.numeric(format(round(result_income$pr,4), nsmall=4))
+    ggplot(result_income, aes(household_income,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Household Income")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Househoud Income")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-4.png)  
 
     ## Prevelance Ratio by Education Attachment
     result_education
@@ -367,12 +392,24 @@
     ## 2 High school or some college 0.3165746 1.357664
     ## 3    College degree or higher 0.2331759 1.000000
 
+    colnames(result_education) <- c("Prevalence Ratio", "pr")
+    result_education$pr=as.numeric(format(round(result_education$pr,4), nsmall=4))
+    ggplot(result_education, aes(education_attachment,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Education Attachment")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Educational Attachment")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-5.png)  
+
     ## Prevelance Ratio by Smoke
     result_smoke
 
     ##        smoking_habit Prevalence Ratio Adjusted Prevalence Ratio
     ## 1     Current smoker        0.2551230                  1.000000
     ## 2 Non current smoker        0.2988134                  1.171252
+
+    colnames(result_smoke) <- c("Prevalence Ratio", "pr")
+    result_smoke$pr=as.numeric(format(round(result_smoke$pr,4), nsmall=4))
+    ggplot(result_smoke, aes(smoking_habit,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Smoking Habit")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Smoking Habit")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-6.png)  
 
     ## Prevelance Ratio by level of Fruits and Vegetables intakes
     result_fruit
@@ -384,6 +421,12 @@
     ## 1                 1.0000000
     ## 2                 0.7812977
 
+    colnames(result_fruit) <- c("Prevalence Ratio", "pr")
+    result_fruit$pr=as.numeric(format(round(result_fruit$pr,4), nsmall=4))
+    ggplot(result_fruit, aes(fruits_vegetables_consumption,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Fruit & Vegetable Consumption")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Fruit & Vegetable Consumption")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-7.png)  
+
     ## Prevelance Ratio by level of Leisure-time Physical Activities
     result_LTPA
 
@@ -394,9 +437,21 @@
     ## 1                 1.0000000
     ## 2                 0.5812375
 
+    colnames(result_LTPA) <- c("Prevalence Ratio", "pr")
+    result_LTPA$pr=as.numeric(format(round(result_LTPA$pr,4), nsmall=4))
+    ggplot(result_LTPA, aes(VigorousLeisureTimePhysicalActivity,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Vigorous Leisure Time Activity")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Vigorous Leisure Time Activity")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-8.png)  
+
     ## Prevelance Ratio by Occupational Physical Activities
     result_OPA
 
     ##   occupationalPhysicalActivity Prevalence Ratio Adjusted Prevalence Ratio
     ## 1      Nonphysically demanding        0.2829642                 1.0000000
     ## 2         Physically demanding        0.2613438                 0.9235932
+
+    colnames(result_OPA) <- c("Prevalence Ratio", "pr")
+    result_OPA$pr=as.numeric(format(round(result_OPA$pr,4), nsmall=4))
+    ggplot(result_OPA, aes(occupationalPhysicalActivity,pr*100))+geom_bar(colour="black",width=.5,stat="identity")+xlab("Occupational Physical Activity")+ylab("Prevalence of Obesity (%)")+geom_text(aes(label = pr*100), vjust=-1, size = 5)+ggtitle("Prevalence of Obesity by Occupational Physical Activity")
+
+![](output_files/figure-markdown_strict/unnamed-chunk-11-9.png)
